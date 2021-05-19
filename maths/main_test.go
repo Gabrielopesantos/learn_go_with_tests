@@ -1,20 +1,17 @@
-package clockface_test
+package clockface
 
 import (
     "testing"
     "time"
     "math"
  
-    "maths"
-
-    //"github.com/gypsydave5/learn-go-with-tests/math/v1/clockface"
 )
 
 func TestSecondHandAtMidnight(t *testing.T) {
     tm := time.Date(1337, time.January, 1, 0, 0, 0, 0, time.UTC)
 
-    want := clockface.Point{X: 150, Y: 150 - 90}
-    got := clockface.SecondHand(tm)
+    want := Point{X: 150, Y: 150 - 90}
+    got := SecondHand(tm)
 
     if got != want {
         t.Errorf("Got %v, wanted %v", got, want)
@@ -33,7 +30,7 @@ func TestSecondsInRadians(t *testing.T) {
     }
     for _, c := range cases {
         t.Run(testName(c.time), func(t *testing.T) {
-            got := clockface.SecondsInRadians(c.time)
+            got := SecondsInRadians(c.time)
 
             if c.angle != got {
                 t.Fatalf("Wanted %v radians, but got %v", c.angle, got)
@@ -48,4 +45,43 @@ func simpleTime(hours, minutes, seconds int) time.Time {
 
 func testName(t time.Time) string {
     return t.Format("15:04:05")
+}
+
+func TestSecondHandVector(t *testing.T) {
+    cases := []struct {
+        time time.Time
+        point Point
+    }{
+        {simpleTime(0, 0, 30), Point{0, -1}},
+    }
+
+    for _, c := range cases {
+        t.Run(testName(c.time), func(t *testing.T) {
+            got := SecondHandPoint(c.time)
+            if got != c.point {
+                t.Fatalf("Wanted %v Point, but got %v", c.point, got)
+            }
+        })
+    }
+}
+
+
+
+func TestSecondHandPoint(t *testing.T) {
+    cases := []struct {
+        time time.Time
+        point Point
+    }{
+        {simpleTime(0, 0, 30), Point{0, -1}},
+        {simpleTime(0, 0, 45), Point{-1, 0}},
+    }
+
+    for _, c := range cases {
+        t.Run(testName(c.time), func(t *testing.T) {
+            got := SecondHandPoint(c.time)
+            if got != c.point {
+                t.Fatalf("Wanted %v Point, but got %v", c.point, got)
+            }
+        })
+    }
 }
